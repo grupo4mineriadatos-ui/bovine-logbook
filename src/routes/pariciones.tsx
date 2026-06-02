@@ -2,50 +2,54 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import { Spinner } from "@/components/Spinner";
+import { Field } from "./index";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/pariciones")({
   head: () => ({
     meta: [
-      { title: "Cargar Tacto — Gestión Reproductiva" },
-      { name: "description", content: "Registrar tactos en el rodeo bovino." },
+      { title: "Cargar Parición — Gestión Reproductiva" },
+      { name: "description", content: "Registrar pariciones en el rodeo bovino." },
     ],
   }),
-  component: CargarTacto,
+  component: CargarParicion,
 });
 
-function CargarTacto() {
+function CargarParicion() {
   const [caravana, setCaravana] = useState("");
   const [fecha, setFecha] = useState("");
-  const [resultado, setResultado] = useState<"positivo" | "negativo" | "dudoso">("positivo");
-  const [dias, setDias] = useState<number | "">("");
+  const [sexo, setSexo] = useState<"macho" | "hembra">("macho");
+  const [peso, setPeso] = useState<number | "">("");
+  const [obs, setObs] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<{ fpp?: string } | null>(null);
+  const [success, setSuccess] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    setSuccess(null);
-    if (!caravana || !fecha || dias === "") {
+    setSuccess(false);
+    if (!caravana || !fecha || peso === "") {
       setError("Completá todos los campos requeridos.");
       return;
     }
     setLoading(true);
     try {
-      const data = await api.crearTacto({
+      await api.crearParicion({
         caravana,
-        fecha_tacto: fecha,
-        resultado,
-        dias_gestacion_estim: Number(dias),
+        fecha_paricion: fecha,
+        sexo_cria: sexo,
+        peso_nacer_kg: Number(peso),
+        observaciones: obs,
       });
-      setSuccess({ fpp: data?.fecha_probable_parto });
+      setSuccess(true);
       setCaravana("");
       setFecha("");
-      setDias("");
-      setResultado("positivo");
+      setPeso("");
+      setObs("");
+      setSexo("macho");
     } catch (err) {
-      if (err instanceof ApiError && err.status === 404) {
-        setError("La caravana no existe en la planilla maestra.");
+      if (err instanceof ApiError) {
+        setError(err.payload?.error || err.message);
       } else {
         setError(err instanceof Error ? err.message : "Error desconocido");
       }
@@ -56,9 +60,9 @@ function CargarTacto() {
 
   return (
     <div className="mx-auto max-w-xl">
-      <h1 className="mb-1 text-2xl font-bold text-foreground">Cargar Tacto</h1>
+      <h1 className="mb-1 text-2xl font-bold text-foreground">Cargar Parición</h1>
       <p className="mb-6 text-sm text-muted-foreground">
-        Registrá un nuevo tacto rectal en el rodeo.
+        Registrá el nacimiento de una cría.
       </p>
 
       <form onSubmit={onSubmit} className="space-y-4 rounded-lg border bg-card p-4 shadow-sm">
@@ -69,11 +73,10 @@ function CargarTacto() {
             value={caravana}
             onChange={(e) => setCaravana(e.target.value)}
             className="input"
-            placeholder="Ej: 1234"
           />
         </Field>
 
-        <Field label="Fecha del tacto" required>
+        <Field label="Fecha de parición" required>
           <input
             type="date"
             required
@@ -83,25 +86,34 @@ function CargarTacto() {
           />
         </Field>
 
-        <Field label="Resultado" required>
+        <Field label="Sexo de la cría" required>
           <select
-            value={resultado}
-            onChange={(e) => setResultado(e.target.value as typeof resultado)}
+            value={sexo}
+            onChange={(e) => setSexo(e.target.value as typeof sexo)}
             className="input"
           >
-            <option value="positivo">Positivo</option>
-            <option value="negativo">Negativo</option>
-            <option value="dudoso">Dudoso</option>
+            <option value="macho">Macho</option>
+            <option value="hembra">Hembra</option>
           </select>
         </Field>
 
-        <Field label="Días de gestación estimados" required>
+        <Field label="Peso al nacer (kg)" required>
           <input
             type="number"
+            step="0.1"
             min={0}
             required
-            value={dias}
-            onChange={(e) => setDias(e.target.value === "" ? "" : Number(e.target.value))}
+            value={peso}
+            onChange={(e) => setPeso(e.target.value === "" ? "" : Number(e.target.value))}
+            className="input"
+          />
+        </Field>
+
+        <Field label="Observaciones">
+          <textarea
+            value={obs}
+            onChange={(e) => setObs(e.target.value)}
+            rows={3}
             className="input"
           />
         </Field>
@@ -112,7 +124,7 @@ function CargarTacto() {
           className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
         >
           {loading && <Spinner />}
-          {loading ? "Enviando…" : "Guardar tacto"}
+          {loading ? "Enviando…" : "Guardar parición"}
         </button>
 
         {error && (
@@ -123,35 +135,10 @@ function CargarTacto() {
 
         {success && (
           <div className="rounded-md border border-primary/30 bg-primary/5 p-3 text-sm text-foreground">
-            <p className="font-medium">Tacto registrado correctamente.</p>
-            {success.fpp && (
-              <p className="mt-1">
-                Fecha probable de parto: <strong>{success.fpp}</strong>
-              </p>
-            )}
-            <p className="mt-1 text-muted-foreground">Reporte enviado por correo.</p>
+            Parición registrada correctamente.
           </div>
         )}
       </form>
     </div>
-  );
-}
-
-export function Field({
-  label,
-  required,
-  children,
-}: {
-  label: string;
-  required?: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <label className="block">
-      <span className="mb-1 block text-sm font-medium text-foreground">
-        {label} {required && <span className="text-destructive">*</span>}
-      </span>
-      {children}
-    </label>
   );
 }

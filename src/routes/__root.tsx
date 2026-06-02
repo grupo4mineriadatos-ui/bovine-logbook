@@ -116,10 +116,37 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  const linkBase =
+    "rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors";
+  const activeProps = { className: `${linkBase} bg-accent text-accent-foreground` };
+  const inactiveProps = { className: linkBase };
+
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <div className="min-h-screen bg-background">
+        <header className="sticky top-0 z-10 border-b bg-card/80 backdrop-blur">
+          <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-2 px-4 py-3">
+            <Link to="/" className="mr-auto text-base font-bold text-foreground">
+              🐄 Rodeo
+            </Link>
+            <nav className="flex flex-wrap gap-1">
+              <Link to="/" activeOptions={{ exact: true }} activeProps={activeProps} inactiveProps={inactiveProps}>
+                Tactos
+              </Link>
+              <Link to="/pariciones" activeProps={activeProps} inactiveProps={inactiveProps}>
+                Pariciones
+              </Link>
+              <Link to="/consultas" activeProps={activeProps} inactiveProps={inactiveProps}>
+                Consultas
+              </Link>
+            </nav>
+          </div>
+        </header>
+        <main className="mx-auto max-w-5xl px-4 py-6">
+          <Outlet />
+        </main>
+      </div>
     </QueryClientProvider>
   );
 }
+
