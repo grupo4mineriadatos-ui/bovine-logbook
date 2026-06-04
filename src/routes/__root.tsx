@@ -121,7 +121,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   const linkBase =
-    "rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors";
+    "rounded-full px-4 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/60 transition-colors";
   const activeProps = { className: `${linkBase} bg-accent text-accent-foreground` };
   const inactiveProps = { className: linkBase };
 
