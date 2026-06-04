@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { Tag, Calendar, Stethoscope, Activity, Save } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import { Spinner } from "@/components/Spinner";
 
@@ -56,80 +57,88 @@ function CargarTacto() {
   }
 
   return (
-    <div className="mx-auto max-w-xl">
-      <h1 className="mb-1 text-2xl font-bold text-foreground">Cargar Tacto</h1>
+    <div className="mx-auto max-w-lg">
+      <h1 className="mb-1 text-2xl font-bold tracking-tight text-foreground">Cargar Tacto</h1>
       <p className="mb-6 text-sm text-muted-foreground">
         Registrá un nuevo tacto rectal en el rodeo.
       </p>
 
-      <form onSubmit={onSubmit} className="space-y-4 rounded-lg border bg-card p-4 shadow-sm">
+      <form onSubmit={onSubmit} className="form-card space-y-5">
         <Field label="Caravana" required>
-          <input
-            type="text"
-            required
-            value={caravana}
-            onChange={(e) => setCaravana(e.target.value)}
-            className="input"
-            placeholder="Ej: 1234"
-          />
+          <span className="input-icon">
+            <Tag size={16} />
+            <input
+              type="text"
+              required
+              value={caravana}
+              onChange={(e) => setCaravana(e.target.value)}
+              className="input"
+              placeholder="Ej: 1234"
+            />
+          </span>
         </Field>
 
         <Field label="Fecha del tacto" required>
-          <input
-            type="date"
-            required
-            value={fecha}
-            onChange={(e) => setFecha(e.target.value)}
-            className="input"
-          />
+          <span className="input-icon">
+            <Calendar size={16} />
+            <input
+              type="date"
+              required
+              value={fecha}
+              onChange={(e) => setFecha(e.target.value)}
+              className="input"
+            />
+          </span>
         </Field>
 
         <Field label="Resultado" required>
-          <select
-            value={resultado}
-            onChange={(e) => {
-              const nuevo = e.target.value as typeof resultado;
-              setResultado(nuevo);
-              if (nuevo === "negativo") setDias("");
-            }}
-            className="input"
-          >
-            <option value="positivo">Positivo</option>
-            <option value="negativo">Negativo</option>
-            <option value="dudoso">Dudoso</option>
-          </select>
+          <span className="input-icon">
+            <Stethoscope size={16} />
+            <select
+              value={resultado}
+              onChange={(e) => {
+                const nuevo = e.target.value as typeof resultado;
+                setResultado(nuevo);
+                if (nuevo === "negativo") setDias("");
+              }}
+              className="input"
+            >
+              <option value="positivo">Positivo</option>
+              <option value="negativo">Negativo</option>
+              <option value="dudoso">Dudoso</option>
+            </select>
+          </span>
         </Field>
 
         {resultado !== "negativo" && (
           <Field label="Días de gestación estimados" required>
-            <input
-              type="number"
-              min={0}
-              required
-              value={dias}
-              onChange={(e) => setDias(e.target.value === "" ? "" : Number(e.target.value))}
-              className="input"
-            />
+            <span className="input-icon">
+              <Activity size={16} />
+              <input
+                type="number"
+                min={0}
+                required
+                value={dias}
+                onChange={(e) => setDias(e.target.value === "" ? "" : Number(e.target.value))}
+                className="input"
+              />
+            </span>
           </Field>
         )}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
-        >
-          {loading && <Spinner />}
+        <button type="submit" disabled={loading} className="btn-primary">
+          {loading ? <Spinner /> : <Save size={16} />}
           {loading ? "Enviando…" : "Guardar tacto"}
         </button>
 
         {error && (
-          <div className="rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+          <div className="rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
             {error}
           </div>
         )}
 
         {success && (
-          <div className="rounded-md border border-primary/30 bg-primary/5 p-3 text-sm text-foreground">
+          <div className="rounded-xl border border-primary/30 bg-primary/5 p-3 text-sm text-foreground">
             <p className="font-medium">Tacto registrado correctamente.</p>
             {success.fpp && (
               <p className="mt-1">
@@ -155,8 +164,8 @@ export function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-medium text-foreground">
-        {label} {required && <span className="text-destructive">*</span>}
+      <span className="mb-1.5 block text-sm font-medium text-foreground">
+        {label} {required && <span className="text-primary">*</span>}
       </span>
       {children}
     </label>
