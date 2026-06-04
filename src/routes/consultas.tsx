@@ -85,7 +85,11 @@ function TactosTable() {
           <Spinner /> Cargando…
         </div>
       )}
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {error && (
+        <div className="py-10">
+          <EmptyState />
+        </div>
+      )}
       {!loading && !error && (
         <div className="overflow-x-auto rounded-xl border bg-card">
           <table className="w-full text-sm">
