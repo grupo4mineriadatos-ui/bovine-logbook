@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Filter, Calendar } from "lucide-react";
-import { api, type Tacto, type Paricion } from "@/lib/api";
+import { Filter, Calendar, Inbox } from "lucide-react";
+import { api, ApiError, type Tacto, type Paricion } from "@/lib/api";
 import { Spinner } from "@/components/Spinner";
 
 export const Route = createFileRoute("/consultas")({
@@ -42,7 +42,11 @@ function TactosTable() {
       const d = await api.listarTactos(resultado || undefined);
       setData(Array.isArray(d) ? d : []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error");
+      if (err instanceof ApiError && err.status === 404) {
+        setData([]);
+      } else {
+        setError(err instanceof Error ? err.message : "Error");
+      }
     } finally {
       setLoading(false);
     }
@@ -85,7 +89,11 @@ function TactosTable() {
           <Spinner /> Cargando…
         </div>
       )}
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {error && (
+        <div className="flex flex-col items-center justify-center rounded-xl border border-destructive/20 bg-destructive/5 py-10 text-center">
+          <p className="text-sm text-destructive">{error}</p>
+        </div>
+      )}
       {!loading && !error && (
         <div className="overflow-x-auto rounded-xl border bg-card">
           <table className="w-full text-sm">
@@ -101,8 +109,8 @@ function TactosTable() {
             <tbody>
               {data.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-3 py-10 text-center text-muted-foreground">
-                    Sin resultados
+                  <td colSpan={5} className="px-3 py-12">
+                    <EmptyState />
                   </td>
                 </tr>
               ) : (
@@ -138,7 +146,11 @@ function ParicionesTable() {
       const d = await api.listarPariciones(desde || undefined, hasta || undefined);
       setData(Array.isArray(d) ? d : []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error");
+      if (err instanceof ApiError && err.status === 404) {
+        setData([]);
+      } else {
+        setError(err instanceof Error ? err.message : "Error");
+      }
     } finally {
       setLoading(false);
     }
@@ -195,8 +207,8 @@ function ParicionesTable() {
             <tbody>
               {data.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-3 py-10 text-center text-muted-foreground">
-                    Sin resultados
+                  <td colSpan={5} className="px-3 py-12">
+                    <EmptyState />
                   </td>
                 </tr>
               ) : (
@@ -223,4 +235,13 @@ function Th({ children }: { children: React.ReactNode }) {
 }
 function Td({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <td className={`px-4 py-2.5 ${className}`}>{children}</td>;
+}
+
+function EmptyState() {
+  return (
+    <div className="flex flex-col items-center justify-center text-center">
+      <Inbox size={40} className="mb-3 text-gray-300" strokeWidth={1.5} />
+      <p className="text-sm text-gray-400">No hay registros para mostrar</p>
+    </div>
+  );
 }

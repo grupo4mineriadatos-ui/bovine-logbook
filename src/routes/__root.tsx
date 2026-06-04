@@ -132,8 +132,8 @@ function RootComponent() {
         className="min-h-screen bg-cover bg-center bg-fixed"
         style={{ backgroundImage: `url(${fieldBg.url})` }}
       >
-        <div className="min-h-screen bg-[#F9FAFB]/90 backdrop-blur-[2px]">
-          <header className="sticky top-0 z-10 border-b border-border/60 bg-white/75 backdrop-blur-md">
+        <div className="min-h-screen bg-[#F9FAFB]/70 backdrop-blur-sm">
+          <header className="sticky top-0 z-10 border-b border-white/20 bg-white/60 backdrop-blur-md">
             <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-2 px-4 py-3">
               <Link to="/" className="mr-auto text-base font-bold text-foreground">
                 🐄 Rodeo
