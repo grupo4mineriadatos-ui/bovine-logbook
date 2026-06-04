@@ -26,7 +26,8 @@ function CargarTacto() {
     e.preventDefault();
     setError(null);
     setSuccess(null);
-    if (!caravana || !fecha || dias === "") {
+    const requiereDias = resultado !== "negativo";
+    if (!caravana || !fecha || (requiereDias && dias === "")) {
       setError("Completá todos los campos requeridos.");
       return;
     }
@@ -36,7 +37,7 @@ function CargarTacto() {
         caravana,
         fecha_tacto: fecha,
         resultado,
-        dias_gestacion_estim: Number(dias),
+        dias_gestacion_estim: requiereDias ? Number(dias) : null,
       });
       setSuccess({ fpp: data?.fecha_probable_parto });
       setCaravana("");
