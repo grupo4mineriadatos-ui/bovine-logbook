@@ -26,7 +26,8 @@ function CargarTacto() {
     e.preventDefault();
     setError(null);
     setSuccess(null);
-    if (!caravana || !fecha || dias === "") {
+    const requiereDias = resultado !== "negativo";
+    if (!caravana || !fecha || (requiereDias && dias === "")) {
       setError("Completá todos los campos requeridos.");
       return;
     }
@@ -36,7 +37,7 @@ function CargarTacto() {
         caravana,
         fecha_tacto: fecha,
         resultado,
-        dias_gestacion_estim: Number(dias),
+        dias_gestacion_estim: requiereDias ? Number(dias) : null,
       });
       setSuccess({ fpp: data?.fecha_probable_parto });
       setCaravana("");
@@ -86,7 +87,11 @@ function CargarTacto() {
         <Field label="Resultado" required>
           <select
             value={resultado}
-            onChange={(e) => setResultado(e.target.value as typeof resultado)}
+            onChange={(e) => {
+              const nuevo = e.target.value as typeof resultado;
+              setResultado(nuevo);
+              if (nuevo === "negativo") setDias("");
+            }}
             className="input"
           >
             <option value="positivo">Positivo</option>
@@ -95,16 +100,18 @@ function CargarTacto() {
           </select>
         </Field>
 
-        <Field label="Días de gestación estimados" required>
-          <input
-            type="number"
-            min={0}
-            required
-            value={dias}
-            onChange={(e) => setDias(e.target.value === "" ? "" : Number(e.target.value))}
-            className="input"
-          />
-        </Field>
+        {resultado !== "negativo" && (
+          <Field label="Días de gestación estimados" required>
+            <input
+              type="number"
+              min={0}
+              required
+              value={dias}
+              onChange={(e) => setDias(e.target.value === "" ? "" : Number(e.target.value))}
+              className="input"
+            />
+          </Field>
+        )}
 
         <button
           type="submit"
