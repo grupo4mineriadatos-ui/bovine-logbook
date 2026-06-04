@@ -8,6 +8,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import fieldBg from "../assets/field-bg.jpg.asset.json";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -127,28 +128,33 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen bg-background">
-        <header className="sticky top-0 z-10 border-b bg-card/80 backdrop-blur">
-          <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-2 px-4 py-3">
-            <Link to="/" className="mr-auto text-base font-bold text-foreground">
-              🐄 Rodeo
-            </Link>
-            <nav className="flex flex-wrap gap-1">
-              <Link to="/" activeOptions={{ exact: true }} activeProps={activeProps} inactiveProps={inactiveProps}>
-                Tactos
+      <div
+        className="min-h-screen bg-cover bg-center bg-fixed"
+        style={{ backgroundImage: `url(${fieldBg.url})` }}
+      >
+        <div className="min-h-screen bg-[#F9FAFB]/90 backdrop-blur-[2px]">
+          <header className="sticky top-0 z-10 border-b border-border/60 bg-white/75 backdrop-blur-md">
+            <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-2 px-4 py-3">
+              <Link to="/" className="mr-auto text-base font-bold text-foreground">
+                🐄 Rodeo
               </Link>
-              <Link to="/pariciones" activeProps={activeProps} inactiveProps={inactiveProps}>
-                Pariciones
-              </Link>
-              <Link to="/consultas" activeProps={activeProps} inactiveProps={inactiveProps}>
-                Consultas
-              </Link>
-            </nav>
-          </div>
-        </header>
-        <main className="mx-auto max-w-5xl px-4 py-6">
-          <Outlet />
-        </main>
+              <nav className="flex flex-wrap gap-1">
+                <Link to="/" activeOptions={{ exact: true }} activeProps={activeProps} inactiveProps={inactiveProps}>
+                  Tactos
+                </Link>
+                <Link to="/pariciones" activeProps={activeProps} inactiveProps={inactiveProps}>
+                  Pariciones
+                </Link>
+                <Link to="/consultas" activeProps={activeProps} inactiveProps={inactiveProps}>
+                  Consultas
+                </Link>
+              </nav>
+            </div>
+          </header>
+          <main className="mx-auto max-w-5xl px-4 py-8">
+            <Outlet />
+          </main>
+        </div>
       </div>
     </QueryClientProvider>
   );
