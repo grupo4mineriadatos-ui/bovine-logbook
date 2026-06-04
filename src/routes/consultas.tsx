@@ -17,7 +17,7 @@ export const Route = createFileRoute("/consultas")({
 function Consultas() {
   return (
     <div className="mx-auto max-w-5xl space-y-10">
-      <div>
+      <div className="text-center">
         <h1 className="text-2xl font-bold tracking-tight text-foreground">Consultas</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Histórico de tactos y pariciones registrados en el rodeo.
@@ -55,9 +55,9 @@ function TactosTable() {
 
   return (
     <section className="form-card !p-6">
-      <div className="mb-4 flex flex-wrap items-end gap-3">
+      <div className="mb-5 flex flex-wrap items-end gap-4">
         <h2 className="text-lg font-semibold text-foreground">Tactos</h2>
-        <div className="ml-auto flex flex-wrap items-end gap-2">
+        <div className="ml-auto flex flex-wrap items-end gap-4">
           <label className="text-sm">
             <span className="mb-1 block text-muted-foreground">Filtrar por resultado</span>
             <span className="input-icon">
@@ -74,7 +74,7 @@ function TactosTable() {
               </select>
             </span>
           </label>
-          <button onClick={load} className="btn-primary btn-sm">
+          <button onClick={load} className="btn-primary btn-sm self-end">
             Aplicar
           </button>
         </div>
@@ -151,9 +151,9 @@ function ParicionesTable() {
 
   return (
     <section className="form-card !p-6">
-      <div className="mb-4 flex flex-wrap items-end gap-3">
+      <div className="mb-5 flex flex-wrap items-end gap-4">
         <h2 className="text-lg font-semibold text-foreground">Pariciones</h2>
-        <div className="ml-auto flex flex-wrap items-end gap-2">
+        <div className="ml-auto flex flex-wrap items-end gap-4">
           <label className="text-sm">
             <span className="mb-1 block text-muted-foreground">Desde</span>
             <span className="input-icon">
@@ -168,7 +168,7 @@ function ParicionesTable() {
               <input type="date" value={hasta} onChange={(e) => setHasta(e.target.value)} className="input" />
             </span>
           </label>
-          <button onClick={load} className="btn-primary btn-sm">
+          <button onClick={load} className="btn-primary btn-sm self-end">
             Aplicar
           </button>
         </div>
