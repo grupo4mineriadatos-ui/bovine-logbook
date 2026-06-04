@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Tag, Calendar, Stethoscope, Activity, Save } from "lucide-react";
+import { Tag, Calendar, Stethoscope, Activity } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import { Spinner } from "@/components/Spinner";
 
@@ -58,10 +58,12 @@ function CargarTacto() {
 
   return (
     <div className="mx-auto max-w-lg">
-      <h1 className="mb-1 text-2xl font-bold tracking-tight text-foreground">Cargar Tacto</h1>
-      <p className="mb-6 text-sm text-muted-foreground">
-        Registrá un nuevo tacto rectal en el rodeo.
-      </p>
+      <div className="mb-6 text-center">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">Cargar Tacto</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Registrá un nuevo tacto rectal en el rodeo.
+        </p>
+      </div>
 
       <form onSubmit={onSubmit} className="form-card space-y-5">
         <Field label="Caravana" required>
@@ -127,7 +129,6 @@ function CargarTacto() {
         )}
 
         <button type="submit" disabled={loading} className="btn-primary">
-          {loading ? <Spinner /> : <Save size={16} />}
           {loading ? "Enviando…" : "Guardar tacto"}
         </button>
 
