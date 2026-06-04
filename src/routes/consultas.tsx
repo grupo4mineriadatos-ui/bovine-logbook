@@ -42,7 +42,11 @@ function TactosTable() {
       const d = await api.listarTactos(resultado || undefined);
       setData(Array.isArray(d) ? d : []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error");
+      if (err instanceof ApiError && err.status === 404) {
+        setData([]);
+      } else {
+        setError(err instanceof Error ? err.message : "Error");
+      }
     } finally {
       setLoading(false);
     }
@@ -142,7 +146,11 @@ function ParicionesTable() {
       const d = await api.listarPariciones(desde || undefined, hasta || undefined);
       setData(Array.isArray(d) ? d : []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error");
+      if (err instanceof ApiError && err.status === 404) {
+        setData([]);
+      } else {
+        setError(err instanceof Error ? err.message : "Error");
+      }
     } finally {
       setLoading(false);
     }
