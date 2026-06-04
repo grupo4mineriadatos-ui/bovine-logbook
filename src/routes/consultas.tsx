@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Filter, Calendar, Inbox } from "lucide-react";
-import { api, type Tacto, type Paricion } from "@/lib/api";
+import { api, ApiError, type Tacto, type Paricion } from "@/lib/api";
 import { Spinner } from "@/components/Spinner";
 
 export const Route = createFileRoute("/consultas")({
