@@ -87,7 +87,11 @@ function CargarTacto() {
         <Field label="Resultado" required>
           <select
             value={resultado}
-            onChange={(e) => setResultado(e.target.value as typeof resultado)}
+            onChange={(e) => {
+              const nuevo = e.target.value as typeof resultado;
+              setResultado(nuevo);
+              if (nuevo === "negativo") setDias("");
+            }}
             className="input"
           >
             <option value="positivo">Positivo</option>
@@ -96,16 +100,18 @@ function CargarTacto() {
           </select>
         </Field>
 
-        <Field label="Días de gestación estimados" required>
-          <input
-            type="number"
-            min={0}
-            required
-            value={dias}
-            onChange={(e) => setDias(e.target.value === "" ? "" : Number(e.target.value))}
-            className="input"
-          />
-        </Field>
+        {resultado !== "negativo" && (
+          <Field label="Días de gestación estimados" required>
+            <input
+              type="number"
+              min={0}
+              required
+              value={dias}
+              onChange={(e) => setDias(e.target.value === "" ? "" : Number(e.target.value))}
+              className="input"
+            />
+          </Field>
+        )}
 
         <button
           type="submit"
