@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { Filter, Calendar } from "lucide-react";
 import { api, type Tacto, type Paricion } from "@/lib/api";
 import { Spinner } from "@/components/Spinner";
 
@@ -16,7 +17,12 @@ export const Route = createFileRoute("/consultas")({
 function Consultas() {
   return (
     <div className="mx-auto max-w-5xl space-y-10">
-      <h1 className="text-2xl font-bold text-foreground">Consultas</h1>
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">Consultas</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Histórico de tactos y pariciones registrados en el rodeo.
+        </p>
+      </div>
       <TactosTable />
       <ParicionesTable />
     </div>
@@ -48,27 +54,27 @@ function TactosTable() {
   }, []);
 
   return (
-    <section>
-      <div className="mb-3 flex flex-wrap items-end gap-3">
+    <section className="form-card !p-6">
+      <div className="mb-4 flex flex-wrap items-end gap-3">
         <h2 className="text-lg font-semibold text-foreground">Tactos</h2>
         <div className="ml-auto flex flex-wrap items-end gap-2">
           <label className="text-sm">
             <span className="mb-1 block text-muted-foreground">Filtrar por resultado</span>
-            <select
-              value={resultado}
-              onChange={(e) => setResultado(e.target.value)}
-              className="input"
-            >
-              <option value="">Todos</option>
-              <option value="positivo">Positivo</option>
-              <option value="negativo">Negativo</option>
-              <option value="dudoso">Dudoso</option>
-            </select>
+            <span className="input-icon">
+              <Filter size={16} />
+              <select
+                value={resultado}
+                onChange={(e) => setResultado(e.target.value)}
+                className="input"
+              >
+                <option value="">Todos</option>
+                <option value="positivo">Positivo</option>
+                <option value="negativo">Negativo</option>
+                <option value="dudoso">Dudoso</option>
+              </select>
+            </span>
           </label>
-          <button
-            onClick={load}
-            className="rounded-md border bg-secondary px-3 py-2 text-sm font-medium text-secondary-foreground hover:opacity-90"
-          >
+          <button onClick={load} className="btn-primary btn-sm">
             Aplicar
           </button>
         </div>
@@ -81,9 +87,9 @@ function TactosTable() {
       )}
       {error && <p className="text-sm text-destructive">{error}</p>}
       {!loading && !error && (
-        <div className="overflow-x-auto rounded-lg border bg-card">
+        <div className="overflow-x-auto rounded-xl border bg-card">
           <table className="w-full text-sm">
-            <thead className="bg-muted text-left text-muted-foreground">
+            <thead className="bg-muted/60 text-left text-muted-foreground">
               <tr>
                 <Th>Caravana</Th>
                 <Th>Fecha tacto</Th>
@@ -95,13 +101,13 @@ function TactosTable() {
             <tbody>
               {data.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-3 py-6 text-center text-muted-foreground">
+                  <td colSpan={5} className="px-3 py-10 text-center text-muted-foreground">
                     Sin resultados
                   </td>
                 </tr>
               ) : (
                 data.map((t, i) => (
-                  <tr key={t.id_tacto ?? i} className="border-t">
+                  <tr key={t.id_tacto ?? i} className="border-t hover:bg-muted/30 transition-colors">
                     <Td>{t.caravana}</Td>
                     <Td>{t.fecha_tacto}</Td>
                     <Td className="capitalize">{t.resultado}</Td>
@@ -144,22 +150,25 @@ function ParicionesTable() {
   }, []);
 
   return (
-    <section>
-      <div className="mb-3 flex flex-wrap items-end gap-3">
+    <section className="form-card !p-6">
+      <div className="mb-4 flex flex-wrap items-end gap-3">
         <h2 className="text-lg font-semibold text-foreground">Pariciones</h2>
         <div className="ml-auto flex flex-wrap items-end gap-2">
           <label className="text-sm">
             <span className="mb-1 block text-muted-foreground">Desde</span>
-            <input type="date" value={desde} onChange={(e) => setDesde(e.target.value)} className="input" />
+            <span className="input-icon">
+              <Calendar size={16} />
+              <input type="date" value={desde} onChange={(e) => setDesde(e.target.value)} className="input" />
+            </span>
           </label>
           <label className="text-sm">
             <span className="mb-1 block text-muted-foreground">Hasta</span>
-            <input type="date" value={hasta} onChange={(e) => setHasta(e.target.value)} className="input" />
+            <span className="input-icon">
+              <Calendar size={16} />
+              <input type="date" value={hasta} onChange={(e) => setHasta(e.target.value)} className="input" />
+            </span>
           </label>
-          <button
-            onClick={load}
-            className="rounded-md border bg-secondary px-3 py-2 text-sm font-medium text-secondary-foreground hover:opacity-90"
-          >
+          <button onClick={load} className="btn-primary btn-sm">
             Aplicar
           </button>
         </div>
@@ -172,9 +181,9 @@ function ParicionesTable() {
       )}
       {error && <p className="text-sm text-destructive">{error}</p>}
       {!loading && !error && (
-        <div className="overflow-x-auto rounded-lg border bg-card">
+        <div className="overflow-x-auto rounded-xl border bg-card">
           <table className="w-full text-sm">
-            <thead className="bg-muted text-left text-muted-foreground">
+            <thead className="bg-muted/60 text-left text-muted-foreground">
               <tr>
                 <Th>Caravana</Th>
                 <Th>Fecha parición</Th>
@@ -186,13 +195,13 @@ function ParicionesTable() {
             <tbody>
               {data.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-3 py-6 text-center text-muted-foreground">
+                  <td colSpan={5} className="px-3 py-10 text-center text-muted-foreground">
                     Sin resultados
                   </td>
                 </tr>
               ) : (
                 data.map((p, i) => (
-                  <tr key={p.id_paricion ?? i} className="border-t">
+                  <tr key={p.id_paricion ?? i} className="border-t hover:bg-muted/30 transition-colors">
                     <Td>{p.caravana}</Td>
                     <Td>{p.fecha_paricion}</Td>
                     <Td className="capitalize">{p.sexo_cria}</Td>
@@ -210,8 +219,8 @@ function ParicionesTable() {
 }
 
 function Th({ children }: { children: React.ReactNode }) {
-  return <th className="px-3 py-2 font-medium">{children}</th>;
+  return <th className="px-4 py-2.5 font-medium">{children}</th>;
 }
 function Td({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <td className={`px-3 py-2 ${className}`}>{children}</td>;
+  return <td className={`px-4 py-2.5 ${className}`}>{children}</td>;
 }
