@@ -90,8 +90,8 @@ function TactosTable() {
         </div>
       )}
       {error && (
-        <div className="py-10">
-          <EmptyState />
+        <div className="flex flex-col items-center justify-center rounded-xl border border-destructive/20 bg-destructive/5 py-10 text-center">
+          <p className="text-sm text-destructive">{error}</p>
         </div>
       )}
       {!loading && !error && (
