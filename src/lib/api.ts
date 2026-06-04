@@ -41,7 +41,7 @@ export type Tacto = {
   caravana: string;
   fecha_tacto: string;
   resultado: "positivo" | "negativo" | "dudoso";
-  dias_gestacion_estim: number;
+  dias_gestacion_estim: number | null;
   fecha_probable_parto?: string;
 };
 
