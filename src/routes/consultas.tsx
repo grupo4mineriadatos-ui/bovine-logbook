@@ -207,8 +207,8 @@ function ParicionesTable() {
             <tbody>
               {data.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-3 py-10 text-center text-muted-foreground">
-                    Sin resultados
+                  <td colSpan={5} className="px-3 py-12">
+                    <EmptyState />
                   </td>
                 </tr>
               ) : (
