@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Filter, Calendar } from "lucide-react";
+import { Filter, Calendar, Inbox } from "lucide-react";
 import { api, type Tacto, type Paricion } from "@/lib/api";
 import { Spinner } from "@/components/Spinner";
 
