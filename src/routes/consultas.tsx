@@ -224,3 +224,12 @@ function Th({ children }: { children: React.ReactNode }) {
 function Td({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <td className={`px-4 py-2.5 ${className}`}>{children}</td>;
 }
+
+function EmptyState() {
+  return (
+    <div className="flex flex-col items-center justify-center text-center">
+      <Inbox size={40} className="mb-3 text-gray-300" strokeWidth={1.5} />
+      <p className="text-sm text-gray-400">No hay registros para mostrar</p>
+    </div>
+  );
+}
