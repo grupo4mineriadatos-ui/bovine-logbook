@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { Tag, Calendar, Venus, Scale, NotebookPen, Save } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import { Spinner } from "@/components/Spinner";
 import { Field } from "./index";
@@ -59,82 +60,91 @@ function CargarParicion() {
   }
 
   return (
-    <div className="mx-auto max-w-xl">
-      <h1 className="mb-1 text-2xl font-bold text-foreground">Cargar Parición</h1>
-      <p className="mb-6 text-sm text-muted-foreground">
-        Registrá el nacimiento de una cría.
-      </p>
+    <div className="mx-auto max-w-lg">
+      <h1 className="mb-1 text-2xl font-bold tracking-tight text-foreground">Cargar Parición</h1>
+      <p className="mb-6 text-sm text-muted-foreground">Registrá el nacimiento de una cría.</p>
 
-      <form onSubmit={onSubmit} className="space-y-4 rounded-lg border bg-card p-4 shadow-sm">
+      <form onSubmit={onSubmit} className="form-card space-y-5">
         <Field label="Caravana" required>
-          <input
-            type="text"
-            required
-            value={caravana}
-            onChange={(e) => setCaravana(e.target.value)}
-            className="input"
-          />
+          <span className="input-icon">
+            <Tag size={16} />
+            <input
+              type="text"
+              required
+              value={caravana}
+              onChange={(e) => setCaravana(e.target.value)}
+              className="input"
+            />
+          </span>
         </Field>
 
         <Field label="Fecha de parición" required>
-          <input
-            type="date"
-            required
-            value={fecha}
-            onChange={(e) => setFecha(e.target.value)}
-            className="input"
-          />
+          <span className="input-icon">
+            <Calendar size={16} />
+            <input
+              type="date"
+              required
+              value={fecha}
+              onChange={(e) => setFecha(e.target.value)}
+              className="input"
+            />
+          </span>
         </Field>
 
         <Field label="Sexo de la cría" required>
-          <select
-            value={sexo}
-            onChange={(e) => setSexo(e.target.value as typeof sexo)}
-            className="input"
-          >
-            <option value="macho">Macho</option>
-            <option value="hembra">Hembra</option>
-          </select>
+          <span className="input-icon">
+            <Venus size={16} />
+            <select
+              value={sexo}
+              onChange={(e) => setSexo(e.target.value as typeof sexo)}
+              className="input"
+            >
+              <option value="macho">Macho</option>
+              <option value="hembra">Hembra</option>
+            </select>
+          </span>
         </Field>
 
         <Field label="Peso al nacer (kg)" required>
-          <input
-            type="number"
-            step="0.1"
-            min={0}
-            required
-            value={peso}
-            onChange={(e) => setPeso(e.target.value === "" ? "" : Number(e.target.value))}
-            className="input"
-          />
+          <span className="input-icon">
+            <Scale size={16} />
+            <input
+              type="number"
+              step="0.1"
+              min={0}
+              required
+              value={peso}
+              onChange={(e) => setPeso(e.target.value === "" ? "" : Number(e.target.value))}
+              className="input"
+            />
+          </span>
         </Field>
 
         <Field label="Observaciones">
-          <textarea
-            value={obs}
-            onChange={(e) => setObs(e.target.value)}
-            rows={3}
-            className="input"
-          />
+          <span className="input-icon">
+            <NotebookPen size={16} className="!top-4 !-translate-y-0" />
+            <textarea
+              value={obs}
+              onChange={(e) => setObs(e.target.value)}
+              rows={3}
+              className="input"
+            />
+          </span>
         </Field>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
-        >
-          {loading && <Spinner />}
+        <button type="submit" disabled={loading} className="btn-primary">
+          {loading ? <Spinner /> : <Save size={16} />}
           {loading ? "Enviando…" : "Guardar parición"}
         </button>
 
         {error && (
-          <div className="rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+          <div className="rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
             {error}
           </div>
         )}
 
         {success && (
-          <div className="rounded-md border border-primary/30 bg-primary/5 p-3 text-sm text-foreground">
+          <div className="rounded-xl border border-primary/30 bg-primary/5 p-3 text-sm text-foreground">
             Parición registrada correctamente.
           </div>
         )}
