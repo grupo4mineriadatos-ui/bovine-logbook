@@ -157,32 +157,19 @@ export function CaravanaCombobox({ value, onChange, placeholder = "Buscar o ingr
                 required
               />
             </label>
-            <div className="grid grid-cols-2 gap-3">
-              <label className="block">
-                <span className="mb-1.5 block text-sm font-medium">Sexo</span>
-                <select
-                  value={sexo}
-                  onChange={(e) => setSexo(e.target.value as typeof sexo)}
-                  className="input"
-                >
-                  <option value="hembra">Hembra</option>
-                  <option value="macho">Macho</option>
-                </select>
-              </label>
-              <label className="block">
-                <span className="mb-1.5 block text-sm font-medium">Categoría</span>
-                <select
-                  value={categoria}
-                  onChange={(e) => setCategoria(e.target.value)}
-                  className="input"
-                >
-                  <option value="vaca">Vaca</option>
-                  <option value="vaquillona">Vaquillona</option>
-                  <option value="ternero">Ternero/a</option>
-                  <option value="toro">Toro</option>
-                </select>
-              </label>
-            </div>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-medium">Categoría</span>
+              <select
+                value={categoria}
+                onChange={(e) => setCategoria(e.target.value)}
+                className="input"
+              >
+                <option value="vaca">Vaca</option>
+                <option value="vaquillona">Vaquillona</option>
+                <option value="ternero">Ternero/a</option>
+                <option value="toro">Toro</option>
+              </select>
+            </label>
             <DialogFooter>
               <button
                 type="button"
