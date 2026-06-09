@@ -31,10 +31,20 @@ function CargarTacto() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<{ fpp?: string } | null>(null);
 
+  function validateFecha(value: string) {
+    if (value && value > today) {
+      setFechaError("La fecha no puede ser futura");
+      return false;
+    }
+    setFechaError(null);
+    return true;
+  }
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setSuccess(null);
+    if (!validateFecha(fecha)) return;
     const requiereDias = resultado !== "negativo";
     if (!caravana || !fecha || (requiereDias && dias === "")) {
       setError("Completá todos los campos requeridos.");
