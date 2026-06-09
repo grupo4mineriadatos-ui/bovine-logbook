@@ -15,9 +15,16 @@ export const Route = createFileRoute("/")({
   component: CargarTacto,
 });
 
+function toISODate(d: Date) {
+  return d.toISOString().split("T")[0];
+}
+
+const today = toISODate(new Date());
+
 function CargarTacto() {
   const [caravana, setCaravana] = useState("");
   const [fecha, setFecha] = useState("");
+  const [fechaError, setFechaError] = useState<string | null>(null);
   const [resultado, setResultado] = useState<"positivo" | "negativo" | "dudoso">("positivo");
   const [dias, setDias] = useState<number | "">("");
   const [loading, setLoading] = useState(false);
