@@ -68,7 +68,7 @@ export function CaravanaCombobox({ value, onChange, placeholder = "Buscar o ingr
             type="button"
             role="combobox"
             aria-expanded={open}
-            className="input flex w-full items-center justify-between pl-9 pr-3 text-left"
+            className="input relative flex w-full items-center justify-between pl-9 pr-3 text-left"
           >
             <Tag
               size={16}

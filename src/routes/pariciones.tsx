@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Tag, Calendar, Venus, Scale, NotebookPen } from "lucide-react";
+import { Calendar, Venus, Scale, NotebookPen } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import { Spinner } from "@/components/Spinner";
 import { Field } from "./index";
+import { CaravanaCombobox } from "@/components/CaravanaCombobox";
 
 export const Route = createFileRoute("/pariciones")({
   head: () => ({
@@ -68,16 +69,7 @@ function CargarParicion() {
 
       <form onSubmit={onSubmit} className="form-card space-y-5">
         <Field label="Caravana" required>
-          <span className="input-icon">
-            <Tag size={16} />
-            <input
-              type="text"
-              required
-              value={caravana}
-              onChange={(e) => setCaravana(e.target.value)}
-              className="input"
-            />
-          </span>
+          <CaravanaCombobox value={caravana} onChange={setCaravana} />
         </Field>
 
         <Field label="Fecha de parición" required>
