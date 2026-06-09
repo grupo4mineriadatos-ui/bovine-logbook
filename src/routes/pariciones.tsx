@@ -102,7 +102,7 @@ function CargarParicion() {
                 setFecha(e.target.value);
                 validateFecha(e.target.value);
               }}
-              className={cn("input", fechaError && "border-destructive focus:border-destructive focus:shadow-destructive/20")}
+              className={cn("input", fechaError && "border-destructive")}
             />
           </span>
           {fechaError && (

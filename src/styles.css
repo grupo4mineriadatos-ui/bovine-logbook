@@ -162,6 +162,10 @@
   .input::placeholder {
     color: color-mix(in oklab, var(--color-muted-foreground) 80%, transparent);
   }
+  .input.border-destructive:focus {
+    border-color: var(--color-destructive);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-destructive) 18%, transparent);
+  }
 
   .input-icon {
     position: relative;
