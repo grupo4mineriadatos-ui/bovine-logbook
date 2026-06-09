@@ -32,7 +32,6 @@ export function CaravanaCombobox({ value, onChange, placeholder = "Buscar o ingr
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [pendingId, setPendingId] = useState("");
-  const [sexo, setSexo] = useState<"macho" | "hembra">("hembra");
   const [categoria, setCategoria] = useState("vaca");
 
   const typed = search.trim();
@@ -44,7 +43,6 @@ export function CaravanaCombobox({ value, onChange, placeholder = "Buscar o ingr
 
   function openAdd(id: string) {
     setPendingId(id);
-    setSexo("hembra");
     setCategoria("vaca");
     setOpen(false);
     setModalOpen(true);
@@ -53,7 +51,7 @@ export function CaravanaCombobox({ value, onChange, placeholder = "Buscar o ingr
   function handleSave(e: React.FormEvent) {
     e.preventDefault();
     if (!pendingId) return;
-    const animal: Animal = { caravana: pendingId, sexo, categoria };
+    const animal: Animal = { caravana: pendingId, categoria };
     add(animal);
     onChange(pendingId);
     setModalOpen(false);
@@ -108,9 +106,9 @@ export function CaravanaCombobox({ value, onChange, placeholder = "Buscar o ingr
                         )}
                       />
                       <span className="font-medium">{a.caravana}</span>
-                      {a.sexo && (
+                      {a.categoria && (
                         <span className="ml-auto text-xs capitalize text-muted-foreground">
-                          {a.sexo}
+                          {a.categoria}
                         </span>
                       )}
                     </CommandItem>
@@ -159,32 +157,19 @@ export function CaravanaCombobox({ value, onChange, placeholder = "Buscar o ingr
                 required
               />
             </label>
-            <div className="grid grid-cols-2 gap-3">
-              <label className="block">
-                <span className="mb-1.5 block text-sm font-medium">Sexo</span>
-                <select
-                  value={sexo}
-                  onChange={(e) => setSexo(e.target.value as typeof sexo)}
-                  className="input"
-                >
-                  <option value="hembra">Hembra</option>
-                  <option value="macho">Macho</option>
-                </select>
-              </label>
-              <label className="block">
-                <span className="mb-1.5 block text-sm font-medium">Categoría</span>
-                <select
-                  value={categoria}
-                  onChange={(e) => setCategoria(e.target.value)}
-                  className="input"
-                >
-                  <option value="vaca">Vaca</option>
-                  <option value="vaquillona">Vaquillona</option>
-                  <option value="ternero">Ternero/a</option>
-                  <option value="toro">Toro</option>
-                </select>
-              </label>
-            </div>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-medium">Categoría</span>
+              <select
+                value={categoria}
+                onChange={(e) => setCategoria(e.target.value)}
+                className="input"
+              >
+                <option value="vaca">Vaca</option>
+                <option value="vaquillona">Vaquillona</option>
+                <option value="ternero">Ternero/a</option>
+                <option value="toro">Toro</option>
+              </select>
+            </label>
             <DialogFooter>
               <button
                 type="button"

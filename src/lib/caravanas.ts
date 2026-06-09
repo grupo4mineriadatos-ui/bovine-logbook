@@ -1,12 +1,16 @@
 import { useCallback, useEffect, useSyncExternalStore } from "react";
 import { api } from "./api";
+import { VACAS_MAESTRA } from "./vacasMaestra";
 
-const KEY = "caravanas:v1";
+const KEY = "caravanas:v2";
 
 export type Animal = {
   caravana: string;
-  sexo: "macho" | "hembra";
-  categoria?: string;
+  categoria: string;
+  sexo?: "macho" | "hembra";
+  estado?: string;
+  rodeo?: string;
+  fecha_nacimiento?: string;
 };
 
 type State = Animal[];
@@ -15,21 +19,38 @@ let state: State = load();
 const listeners = new Set<() => void>();
 
 function load(): State {
-  if (typeof window === "undefined") return [];
+  if (typeof window === "undefined") return seedDefaults();
   try {
     const raw = window.localStorage.getItem(KEY);
-    return raw ? (JSON.parse(raw) as State) : [];
+    if (raw) return JSON.parse(raw) as State;
   } catch {
-    return [];
+    // ignore
+  }
+  const seeded = seedDefaults();
+  persistValue(seeded);
+  return seeded;
+}
+
+function seedDefaults(): State {
+  return VACAS_MAESTRA.map((v) => ({
+    caravana: v.caravana,
+    categoria: v.categoria,
+    estado: v.estado,
+    rodeo: v.rodeo,
+    fecha_nacimiento: v.fecha_nacimiento,
+  }));
+}
+
+function persistValue(value: State) {
+  try {
+    window.localStorage.setItem(KEY, JSON.stringify(value));
+  } catch {
+    // ignore
   }
 }
 
 function persist() {
-  try {
-    window.localStorage.setItem(KEY, JSON.stringify(state));
-  } catch {
-    // ignore
-  }
+  persistValue(state);
 }
 
 function emit() {
@@ -45,7 +66,7 @@ function getSnapshot() {
   return state;
 }
 function getServerSnapshot(): State {
-  return [];
+  return seedDefaults();
 }
 
 export function addCaravana(animal: Animal) {
@@ -58,7 +79,9 @@ export function addCaravana(animal: Animal) {
 
 export function addCaravanasBulk(caravanas: string[]) {
   const known = new Set(state.map((a) => a.caravana));
-  const toAdd = caravanas.filter((c) => c && !known.has(c)).map((c) => ({ caravana: c, sexo: "hembra" as const }));
+  const toAdd = caravanas
+    .filter((c) => c && !known.has(c))
+    .map((c) => ({ caravana: c, categoria: "vaca" }));
   if (toAdd.length === 0) return;
   state = [...state, ...toAdd];
   persist();
