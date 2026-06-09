@@ -4,6 +4,7 @@ import { Calendar, Stethoscope, Activity } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import { Spinner } from "@/components/Spinner";
 import { CaravanaCombobox } from "@/components/CaravanaCombobox";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
   head: () => ({
