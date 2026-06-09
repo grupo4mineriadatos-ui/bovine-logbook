@@ -144,7 +144,7 @@ function CargarTacto() {
           </Field>
         )}
 
-        <button type="submit" disabled={loading} className="btn-primary">
+        <button type="submit" disabled={loading || !!fechaError} className="btn-primary">
           {loading ? "Enviando…" : "Guardar tacto"}
         </button>
 
