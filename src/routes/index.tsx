@@ -94,11 +94,18 @@ function CargarTacto() {
             <input
               type="date"
               required
+              max={today}
               value={fecha}
-              onChange={(e) => setFecha(e.target.value)}
-              className="input"
+              onChange={(e) => {
+                setFecha(e.target.value);
+                validateFecha(e.target.value);
+              }}
+              className={cn("input", fechaError && "border-destructive focus:border-destructive focus:shadow-destructive/20")}
             />
           </span>
+          {fechaError && (
+            <p className="mt-1.5 text-sm text-destructive">{fechaError}</p>
+          )}
         </Field>
 
         <Field label="Resultado" required>
