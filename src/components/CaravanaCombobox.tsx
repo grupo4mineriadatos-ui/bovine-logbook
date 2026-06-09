@@ -106,9 +106,9 @@ export function CaravanaCombobox({ value, onChange, placeholder = "Buscar o ingr
                         )}
                       />
                       <span className="font-medium">{a.caravana}</span>
-                      {a.sexo && (
+                      {a.categoria && (
                         <span className="ml-auto text-xs capitalize text-muted-foreground">
-                          {a.sexo}
+                          {a.categoria}
                         </span>
                       )}
                     </CommandItem>
