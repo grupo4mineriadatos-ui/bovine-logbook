@@ -32,7 +32,6 @@ export function CaravanaCombobox({ value, onChange, placeholder = "Buscar o ingr
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [pendingId, setPendingId] = useState("");
-  const [sexo, setSexo] = useState<"macho" | "hembra">("hembra");
   const [categoria, setCategoria] = useState("vaca");
 
   const typed = search.trim();
@@ -44,7 +43,6 @@ export function CaravanaCombobox({ value, onChange, placeholder = "Buscar o ingr
 
   function openAdd(id: string) {
     setPendingId(id);
-    setSexo("hembra");
     setCategoria("vaca");
     setOpen(false);
     setModalOpen(true);
@@ -53,7 +51,7 @@ export function CaravanaCombobox({ value, onChange, placeholder = "Buscar o ingr
   function handleSave(e: React.FormEvent) {
     e.preventDefault();
     if (!pendingId) return;
-    const animal: Animal = { caravana: pendingId, sexo, categoria };
+    const animal: Animal = { caravana: pendingId, categoria };
     add(animal);
     onChange(pendingId);
     setModalOpen(false);
