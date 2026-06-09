@@ -4,6 +4,7 @@ import { Calendar, Stethoscope, Activity } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import { Spinner } from "@/components/Spinner";
 import { CaravanaCombobox } from "@/components/CaravanaCombobox";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -15,19 +16,36 @@ export const Route = createFileRoute("/")({
   component: CargarTacto,
 });
 
+function toISODate(d: Date) {
+  return d.toISOString().split("T")[0];
+}
+
+const today = toISODate(new Date());
+
 function CargarTacto() {
   const [caravana, setCaravana] = useState("");
   const [fecha, setFecha] = useState("");
+  const [fechaError, setFechaError] = useState<string | null>(null);
   const [resultado, setResultado] = useState<"positivo" | "negativo" | "dudoso">("positivo");
   const [dias, setDias] = useState<number | "">("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<{ fpp?: string } | null>(null);
 
+  function validateFecha(value: string) {
+    if (value && value > today) {
+      setFechaError("La fecha no puede ser futura");
+      return false;
+    }
+    setFechaError(null);
+    return true;
+  }
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setSuccess(null);
+    if (!validateFecha(fecha)) return;
     const requiereDias = resultado !== "negativo";
     if (!caravana || !fecha || (requiereDias && dias === "")) {
       setError("Completá todos los campos requeridos.");
@@ -77,11 +95,18 @@ function CargarTacto() {
             <input
               type="date"
               required
+              max={today}
               value={fecha}
-              onChange={(e) => setFecha(e.target.value)}
-              className="input"
+              onChange={(e) => {
+                setFecha(e.target.value);
+                validateFecha(e.target.value);
+              }}
+              className={cn("input", fechaError && "border-destructive")}
             />
           </span>
+          {fechaError && (
+            <p className="mt-1.5 text-sm text-destructive">{fechaError}</p>
+          )}
         </Field>
 
         <Field label="Resultado" required>
@@ -119,7 +144,7 @@ function CargarTacto() {
           </Field>
         )}
 
-        <button type="submit" disabled={loading} className="btn-primary">
+        <button type="submit" disabled={loading || !!fechaError} className="btn-primary">
           {loading ? "Enviando…" : "Guardar tacto"}
         </button>
 
