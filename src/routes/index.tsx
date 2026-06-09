@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Tag, Calendar, Stethoscope, Activity } from "lucide-react";
+import { Calendar, Stethoscope, Activity } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import { Spinner } from "@/components/Spinner";
+import { CaravanaCombobox } from "@/components/CaravanaCombobox";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -67,17 +68,7 @@ function CargarTacto() {
 
       <form onSubmit={onSubmit} className="form-card space-y-5">
         <Field label="Caravana" required>
-          <span className="input-icon">
-            <Tag size={16} />
-            <input
-              type="text"
-              required
-              value={caravana}
-              onChange={(e) => setCaravana(e.target.value)}
-              className="input"
-              placeholder="Ej: 1234"
-            />
-          </span>
+          <CaravanaCombobox value={caravana} onChange={setCaravana} />
         </Field>
 
         <Field label="Fecha del tacto" required>
