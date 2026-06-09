@@ -86,6 +86,22 @@ export function CaravanaCombobox({ value, onChange, placeholder = "Buscar o ingr
               onValueChange={setSearch}
             />
             <CommandList>
+              <CommandEmpty className="p-2">
+                {typed ? (
+                  <button
+                    type="button"
+                    onClick={() => openAdd(typed)}
+                    className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-primary hover:bg-accent"
+                  >
+                    <Plus size={14} />
+                    Agregar nueva caravana &ldquo;{typed}&rdquo;
+                  </button>
+                ) : (
+                  <span className="text-sm text-muted-foreground">
+                    Escribí una caravana para buscar.
+                  </span>
+                )}
+              </CommandEmpty>
               {matches.length > 0 && (
                 <CommandGroup heading="Animales">
                   {matches.slice(0, 50).map((a) => (
@@ -115,7 +131,7 @@ export function CaravanaCombobox({ value, onChange, placeholder = "Buscar o ingr
                   ))}
                 </CommandGroup>
               )}
-              {typed && !exact && (
+              {typed && !exact && matches.length > 0 && (
                 <CommandGroup>
                   <CommandItem
                     value={`__add__${typed}`}
@@ -126,12 +142,6 @@ export function CaravanaCombobox({ value, onChange, placeholder = "Buscar o ingr
                     Agregar nueva caravana &ldquo;{typed}&rdquo;
                   </CommandItem>
                 </CommandGroup>
-              )}
-              {!typed && matches.length === 0 && (
-                <CommandEmpty>Escribí una caravana para buscar.</CommandEmpty>
-              )}
-              {typed && matches.length === 0 && exact && (
-                <CommandEmpty>Sin coincidencias.</CommandEmpty>
               )}
             </CommandList>
           </Command>
