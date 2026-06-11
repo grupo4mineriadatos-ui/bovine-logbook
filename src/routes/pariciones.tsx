@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Calendar, Venus, Scale, NotebookPen } from "lucide-react";
-import { api, ApiError } from "@/lib/api";
-import { Spinner } from "@/components/Spinner";
+import { toast } from "sonner";
 import { Field } from "./index";
 import { CaravanaCombobox } from "@/components/CaravanaCombobox";
 import { cn } from "@/lib/utils";
+import { submitToN8N } from "@/lib/n8n";
 
 export const Route = createFileRoute("/pariciones")({
   head: () => ({
