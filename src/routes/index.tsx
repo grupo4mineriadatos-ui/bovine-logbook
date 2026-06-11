@@ -25,6 +25,7 @@ function getTodayLocalISO() {
 }
 
 function CargarTacto() {
+  const today = getTodayLocalISO();
   const [caravana, setCaravana] = useState("");
   const [fecha, setFecha] = useState("");
   const [fechaError, setFechaError] = useState<string | null>(null);
