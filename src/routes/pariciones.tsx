@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Calendar, Venus, Scale, NotebookPen } from "lucide-react";
-import { toast } from "sonner";
+import { Spinner } from "@/components/Spinner";
 import { Field } from "./index";
 import { CaravanaCombobox } from "@/components/CaravanaCombobox";
 import { cn } from "@/lib/utils";
-import { submitToN8N, N8N_PARICIONES_WEBHOOK_URL } from "@/lib/n8n";
+
+// 1. PEGA ACÁ TU URL DE WEBHOOK DE N8N PARA PARICIONES:
+const N8N_PARICIONES_WEBHOOK_URL = "https://auto02.academia.ar/webhook-test/lovable-pariciones-rodeos"; 
 
 export const Route = createFileRoute("/pariciones")({
   head: () => ({
@@ -50,32 +52,46 @@ function CargarParicion() {
     e.preventDefault();
     setError(null);
     setSuccess(false);
+    
     if (!validateFecha(fecha)) return;
+    
     if (!caravana || !fecha || peso === "") {
       setError("Completá todos los campos requeridos.");
       return;
     }
+    
     setLoading(true);
+    
     try {
-      await submitToN8N(N8N_PARICIONES_WEBHOOK_URL, {
-        action: "paricion",
-        caravana,
-        fecha_paricion: fecha,
-        sexo_cria: sexo,
-        peso_nacer: Number(peso),
-        observaciones: obs,
+      // Petición directa al webhook de n8n sin pasar por la API intermedia rota
+      const response = await fetch(N8N_PARICIONES_WEBHOOK_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "paricion",
+          caravana: caravana,
+          fecha_paricion: fecha,
+          sexo_cria: sexo,
+          peso_nacer: Number(peso),
+          observaciones: obs,
+        }),
       });
-      toast.success("Parición registrada correctamente.");
+
+      if (!response.ok) {
+        throw new Error("Error del servidor al guardar la parición");
+      }
+
       setSuccess(true);
       setCaravana("");
       setFecha("");
       setPeso("");
       setObs("");
       setSexo("macho");
+      
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Error desconocido";
-      setError(msg);
-      toast.error(`No se pudo registrar la parición: ${msg}`);
+      setError(err instanceof Error ? err.message : "Error desconocido al conectar con n8n");
     } finally {
       setLoading(false);
     }
