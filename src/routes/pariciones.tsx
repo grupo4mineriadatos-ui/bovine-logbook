@@ -1,13 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Calendar, Venus, Scale, NotebookPen } from "lucide-react";
+import { api, ApiError } from "@/lib/api";
 import { Spinner } from "@/components/Spinner";
 import { Field } from "./index";
 import { CaravanaCombobox } from "@/components/CaravanaCombobox";
 import { cn } from "@/lib/utils";
-
-// 1. PEGA ACÁ TU URL DE WEBHOOK DE N8N PARA PARICIONES:
-const N8N_PARICIONES_WEBHOOK_URL = "https://auto02.academia.ar/webhook-test/lovable-pariciones-rodeos"; 
 
 export const Route = createFileRoute("/pariciones")({
   head: () => ({
@@ -52,46 +50,32 @@ function CargarParicion() {
     e.preventDefault();
     setError(null);
     setSuccess(false);
-    
     if (!validateFecha(fecha)) return;
-    
     if (!caravana || !fecha || peso === "") {
       setError("Completá todos los campos requeridos.");
       return;
     }
-    
     setLoading(true);
-    
     try {
-      // Petición directa al webhook de n8n sin pasar por la API intermedia rota
-      const response = await fetch(N8N_PARICIONES_WEBHOOK_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          action: "paricion",
-          caravana: caravana,
-          fecha_paricion: fecha,
-          sexo_cria: sexo,
-          peso_nacer: Number(peso),
-          observaciones: obs,
-        }),
+      await api.crearParicion({
+        caravana,
+        fecha_paricion: fecha,
+        sexo_cria: sexo,
+        peso_nacer_kg: Number(peso),
+        observaciones: obs,
       });
-
-      if (!response.ok) {
-        throw new Error("Error del servidor al guardar la parición");
-      }
-
       setSuccess(true);
       setCaravana("");
       setFecha("");
       setPeso("");
       setObs("");
       setSexo("macho");
-      
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error desconocido al conectar con n8n");
+      if (err instanceof ApiError) {
+        setError(err.payload?.error || err.message);
+      } else {
+        setError(err instanceof Error ? err.message : "Error desconocido");
+      }
     } finally {
       setLoading(false);
     }
