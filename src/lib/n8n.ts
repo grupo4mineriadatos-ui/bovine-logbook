@@ -1,8 +1,14 @@
-// Reemplazá esta URL por la de tu webhook de n8n.
-export const N8N_WEBHOOK_URL = "https://auto02.academia.ar/webhook-test/lovable-ganaderia";
+export const N8N_TACTOS_WEBHOOK_URL =
+  "https://auto02.academia.ar/webhook-test/lovable-ganaderia";
 
-export async function submitToN8N(payload: Record<string, unknown>): Promise<void> {
-  const res = await fetch(N8N_WEBHOOK_URL, {
+export const N8N_PARICIONES_WEBHOOK_URL =
+  "https://auto02.academia.ar/webhook-test/lovable-pariciones-rodeos";
+
+export async function submitToN8N(
+  url: string,
+  payload: Record<string, unknown>
+): Promise<void> {
+  const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),

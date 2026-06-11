@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Field } from "./index";
 import { CaravanaCombobox } from "@/components/CaravanaCombobox";
 import { cn } from "@/lib/utils";
-import { submitToN8N } from "@/lib/n8n";
+import { submitToN8N, N8N_PARICIONES_WEBHOOK_URL } from "@/lib/n8n";
 
 export const Route = createFileRoute("/pariciones")({
   head: () => ({
@@ -57,7 +57,7 @@ function CargarParicion() {
     }
     setLoading(true);
     try {
-      await submitToN8N({
+      await submitToN8N(N8N_PARICIONES_WEBHOOK_URL, {
         action: "paricion",
         caravana,
         fecha_paricion: fecha,
