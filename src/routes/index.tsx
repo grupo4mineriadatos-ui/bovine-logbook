@@ -4,7 +4,7 @@ import { Calendar, Stethoscope, Activity } from "lucide-react";
 import { toast } from "sonner";
 import { CaravanaCombobox } from "@/components/CaravanaCombobox";
 import { cn } from "@/lib/utils";
-import { submitToN8N } from "@/lib/n8n";
+import { submitToN8N, N8N_TACTOS_WEBHOOK_URL } from "@/lib/n8n";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -56,7 +56,7 @@ function CargarTacto() {
     }
     setLoading(true);
     try {
-      await submitToN8N({
+      await submitToN8N(N8N_TACTOS_WEBHOOK_URL, {
         action: "tacto",
         caravana,
         fecha_tacto: fecha,
