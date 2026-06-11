@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Calendar, Stethoscope, Activity } from "lucide-react";
-import { api, ApiError } from "@/lib/api";
-import { Spinner } from "@/components/Spinner";
+import { toast } from "sonner";
 import { CaravanaCombobox } from "@/components/CaravanaCombobox";
 import { cn } from "@/lib/utils";
+import { submitToN8N } from "@/lib/n8n";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -56,23 +56,23 @@ function CargarTacto() {
     }
     setLoading(true);
     try {
-      const data = await api.crearTacto({
+      await submitToN8N({
+        action: "tacto",
         caravana,
         fecha_tacto: fecha,
         resultado,
-        dias_gestacion_estim: requiereDias ? Number(dias) : null,
+        dias_gestacion: requiereDias ? Number(dias) : null,
       });
-      setSuccess({ fpp: data?.fecha_probable_parto });
+      toast.success("Tacto registrado correctamente.");
+      setSuccess({});
       setCaravana("");
       setFecha("");
       setDias("");
       setResultado("positivo");
     } catch (err) {
-      if (err instanceof ApiError && err.status === 404) {
-        setError("La caravana no existe en la planilla maestra.");
-      } else {
-        setError(err instanceof Error ? err.message : "Error desconocido");
-      }
+      const msg = err instanceof Error ? err.message : "Error desconocido";
+      setError(msg);
+      toast.error(`No se pudo registrar el tacto: ${msg}`);
     } finally {
       setLoading(false);
     }

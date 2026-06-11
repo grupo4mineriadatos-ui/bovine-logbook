@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Calendar, Venus, Scale, NotebookPen } from "lucide-react";
-import { api, ApiError } from "@/lib/api";
-import { Spinner } from "@/components/Spinner";
+import { toast } from "sonner";
 import { Field } from "./index";
 import { CaravanaCombobox } from "@/components/CaravanaCombobox";
 import { cn } from "@/lib/utils";
+import { submitToN8N } from "@/lib/n8n";
 
 export const Route = createFileRoute("/pariciones")({
   head: () => ({
@@ -57,13 +57,15 @@ function CargarParicion() {
     }
     setLoading(true);
     try {
-      await api.crearParicion({
+      await submitToN8N({
+        action: "paricion",
         caravana,
         fecha_paricion: fecha,
         sexo_cria: sexo,
-        peso_nacer_kg: Number(peso),
+        peso_nacer: Number(peso),
         observaciones: obs,
       });
+      toast.success("Parición registrada correctamente.");
       setSuccess(true);
       setCaravana("");
       setFecha("");
@@ -71,11 +73,9 @@ function CargarParicion() {
       setObs("");
       setSexo("macho");
     } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err.payload?.error || err.message);
-      } else {
-        setError(err instanceof Error ? err.message : "Error desconocido");
-      }
+      const msg = err instanceof Error ? err.message : "Error desconocido";
+      setError(msg);
+      toast.error(`No se pudo registrar la parición: ${msg}`);
     } finally {
       setLoading(false);
     }
