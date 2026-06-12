@@ -1,5 +1,5 @@
 export const N8N_TACTOS_WEBHOOK_URL =
-  "https://auto02.academia.ar/webhook/Automatizacion-Tactos";
+  "https://auto02.academia.ar/webhookcargatactos";
 
 export const N8N_PARICIONES_WEBHOOK_URL =
   "https://auto02.academia.ar/webhook/carga-pariciones";
