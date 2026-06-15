@@ -31,7 +31,7 @@ function CargarParicion() {
   const [caravana, setCaravana] = useState("");
   const [fecha, setFecha] = useState("");
   const [fechaError, setFechaError] = useState<string | null>(null);
-  const [sexo, setSexo] = useState<"macho" | "hembra">("macho");
+  const [sexo, setSexo] = useState<"Macho" | "Hembra">("Macho");
   const [peso, setPeso] = useState<number | "">("");
   const [obs, setObs] = useState("");
   const [loading, setLoading] = useState(false);
