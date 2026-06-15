@@ -31,7 +31,7 @@ function CargarParicion() {
   const [caravana, setCaravana] = useState("");
   const [fecha, setFecha] = useState("");
   const [fechaError, setFechaError] = useState<string | null>(null);
-  const [sexo, setSexo] = useState<"macho" | "hembra">("macho");
+  const [sexo, setSexo] = useState<"Macho" | "Hembra">("Macho");
   const [peso, setPeso] = useState<number | "">("");
   const [obs, setObs] = useState("");
   const [loading, setLoading] = useState(false);
@@ -59,12 +59,11 @@ function CargarParicion() {
     setLoading(true);
     try {
       await submitToN8N(N8N_PARICIONES_WEBHOOK_URL, {
-        action: "paricion",
         caravana,
-        fecha_paricion: fecha,
-        sexo_cria: sexo,
-        peso_nacer: Number(peso),
-        observaciones: obs,
+        Fecha_Paricion: fecha,
+        Sexo_Cria: sexo,
+        Peso_Nacer: Number(peso),
+        Observaciones: obs,
       });
       toast.success("Parición registrada correctamente.");
       setSuccess(true);
@@ -72,7 +71,7 @@ function CargarParicion() {
       setFecha("");
       setPeso("");
       setObs("");
-      setSexo("macho");
+      setSexo("Macho");
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Error desconocido";
       setError(msg);
@@ -132,8 +131,8 @@ function CargarParicion() {
               onChange={(e) => setSexo(e.target.value as typeof sexo)}
               className="input"
             >
-              <option value="macho">Macho</option>
-              <option value="hembra">Hembra</option>
+              <option value="Macho">Macho</option>
+              <option value="Hembra">Hembra</option>
             </select>
           </span>
         </Field>
