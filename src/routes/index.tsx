@@ -2,7 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Calendar, Stethoscope, Activity } from "lucide-react";
 import { toast } from "sonner";
-import { CaravanaCombobox } from "@/components/CaravanaCombobox";
+import { Tag } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CARAVANAS } from "@/lib/caravanas";
 import { cn } from "@/lib/utils";
 import { submitToN8N, N8N_TACTOS_WEBHOOK_URL } from "@/lib/n8n";
 
@@ -89,7 +91,17 @@ function CargarTacto() {
 
       <form onSubmit={onSubmit} className="form-card space-y-5">
         <Field label="Caravana" required>
-          <CaravanaCombobox value={caravana} onChange={setCaravana} />
+          <Select value={caravana} onValueChange={setCaravana}>
+            <SelectTrigger className="input pl-9 relative">
+              <Tag size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <SelectValue placeholder="Seleccioná una caravana" />
+            </SelectTrigger>
+            <SelectContent>
+              {CARAVANAS.map((c) => (
+                <SelectItem key={c} value={c}>{c}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </Field>
 
         <Field label="Fecha del tacto" required>
