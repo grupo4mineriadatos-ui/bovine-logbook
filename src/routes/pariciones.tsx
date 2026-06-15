@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Calendar, Venus, Scale, NotebookPen } from "lucide-react";
+import { Calendar, Venus, Scale, NotebookPen, Tag } from "lucide-react";
 import { toast } from "sonner";
 import { Field } from "./index";
-import { CaravanaCombobox } from "@/components/CaravanaCombobox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CARAVANAS } from "@/lib/caravanas";
 import { submitToN8N, N8N_PARICIONES_WEBHOOK_URL } from "@/lib/n8n";
 import { cn } from "@/lib/utils";
 
@@ -90,7 +91,17 @@ function CargarParicion() {
 
       <form onSubmit={onSubmit} className="form-card space-y-5">
         <Field label="Caravana" required>
-          <CaravanaCombobox value={caravana} onChange={setCaravana} />
+          <Select value={caravana} onValueChange={setCaravana}>
+            <SelectTrigger className="input pl-9 relative">
+              <Tag size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <SelectValue placeholder="Seleccioná una caravana" />
+            </SelectTrigger>
+            <SelectContent>
+              {CARAVANAS.map((c) => (
+                <SelectItem key={c} value={c}>{c}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </Field>
 
         <Field label="Fecha de parición" required>
