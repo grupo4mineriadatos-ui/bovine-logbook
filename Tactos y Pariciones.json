@@ -1,0 +1,450 @@
+{
+  "name": "Tactos y Pariciones",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "cargatactosv2",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -624,
+        -16
+      ],
+      "id": "dd396f55-2bd1-43bb-a180-705c176f85d2",
+      "name": "Webhook",
+      "webhookId": "055af767-6f30-4e5e-8ead-d205dd1a2018"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1YcXPqcSYOBHkxPiwTd5c4miVq6OC-Yphs-T2aHCiBlQ",
+          "mode": "list",
+          "cachedResultName": "Hoja_tactos2"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja_vacas"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Caravana",
+              "lookupValue": "={{ $json.body?.caravana || $json.body?.Caravana || $json.caravana || $json.Caravana }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -416,
+        -16
+      ],
+      "id": "9d2258da-cb8c-4b2c-80a0-bf9233239dcc",
+      "name": "Leer Vacas",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LlSGWHE4byTnZPKK",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "ade28cd3-619a-48d6-b6dd-cb8e7fa71091",
+              "leftValue": "=={{ String($json.Caravana) }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -192,
+        -16
+      ],
+      "id": "b489f9ff-4ac4-4493-befa-6c7bb9631aca",
+      "name": "If - ¿La vaca existe?"
+    },
+    {
+      "parameters": {
+        "jsCode": "const webhookData = $('Webhook').first().json.body || $('Webhook').first().json;\nconst vacaMaestra = $input.first().json;\n\nconst gestationPeriod = 283;\nlet fecha_estimacion = \"\";\n\n// Normalizamos nombres de variables por si desde Lovable llegan con mayúsculas o tildes\nconst diasGestacion = webhookData.dias_gestacion || webhookData.días_gestacion || 0;\nconst resultadoTacto = webhookData.Resultado_tacto || webhookData.tacto || \"No especificado\";\n\n// Solo calculamos si hay dias de gestacion y el tacto no es negativo\nif (diasGestacion > 0 && resultadoTacto.toLowerCase() !== 'negativo') {\n  const diasRestantes = gestationPeriod - Number(diasGestacion);\n  const fechaBase = webhookData.Fecha_del_Tacto ? DateTime.fromISO(webhookData.Fecha_del_Tacto) : DateTime.now();\n  fecha_estimacion = fechaBase.plus({ days: diasRestantes }).toFormat('yyyy-MM-dd');\n}\n\nreturn {\n  json: {\n    Fecha_del_Tacto: webhookData.Fecha_del_Tacto || DateTime.now().toFormat('yyyy-MM-dd'),\n    Caravana: vacaMaestra.Caravana,\n    Resultado_tacto: resultadoTacto,\n    días_gestacion: diasGestacion || \"\",\n    fecha_estimacion_parto: fecha_estimacion\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        32,
+        -144
+      ],
+      "id": "24000aa4-086e-460b-b049-897582aa618c",
+      "name": "Code: calcular fecha parto"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1YcXPqcSYOBHkxPiwTd5c4miVq6OC-Yphs-T2aHCiBlQ",
+          "mode": "list",
+          "cachedResultName": "Hoja_tactos2"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1521825076,
+          "mode": "list",
+          "cachedResultName": "estimación_parto"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Fecha_del_Tacto": "={{ $json.Fecha_del_Tacto }}",
+            "Caravana": "={{ $json.Caravana }}",
+            "Resultado_tacto": "={{ $json.Resultado_tacto }}",
+            "días_gestacion": "={{ $json.días_gestacion }}",
+            "fecha_estimacion_parto": "={{ $json.fecha_estimacion_parto }}"
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        256,
+        -144
+      ],
+      "id": "bbee2700-dab4-4b75-a359-f2780f29fc78",
+      "name": "Cargar a la hoja Tactos",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LlSGWHE4byTnZPKK",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "grupo4mineriadatos@gmail.com",
+        "subject": "Partos de vacas cargados exitosamente 🐂!",
+        "message": "<!DOCTYPE html> <html lang=\"es\"> <head>     <meta charset=\"UTF-8\">     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">     <title>Reporte de Carga - Tactos</title>     <style>         body {             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;             background-color: #f4f7f6;             margin: 0;             padding: 0;             color: #333333;         }         .container {             max-width: 600px;             margin: 30px auto;             background: #ffffff;             border-radius: 8px;             overflow: hidden;             box-shadow: 0 4px 15px rgba(0,0,0,0.05);         }         .header {             background-color: #2e7d32;             color: #ffffff;             padding: 30px 20px;             text-align: center;         }         .header h1 {             margin: 0;             font-size: 24px;             font-weight: 600;         }         .content {             padding: 30px 25px;             line-height: 1.6;         }         .success-icon {             font-size: 48px;             color: #4caf50;             text-align: center;             margin-bottom: 15px;         }         .alert-box {             background-color: #e8f5e9;             border-left: 4px solid #4caf50;             padding: 15px;             border-radius: 4px;             margin: 20px 0;         }         .footer {             background-color: #f1f1f1;             text-align: center;             padding: 15px;             font-size: 12px;             color: #777777;             border-top: 1px solid #e0e0e0;         }     </style> </head> <body>       <div class=\"container\">         <div class=\"header\">             <h1>Sistema de Gestión Ganadera</h1>         </div>          <div class=\"content\">             <div class=\"success-icon\">✓</div>             <h2>¡Carga de Tactos Exitosa!</h2>             <p>Hola,</p>             <p>Te notificamos que el proceso ha calculado e indexado correctamente los datos del último tacto realizado.</p>                          <div class=\"alert-box\">                 <strong>Estado del proceso:</strong> Los datos se escribieron con éxito en la tabla transaccional.             </div>              <p>No es necesario realizar ninguna acción adicional.</p>         </div>          <div class=\"footer\">             <p>Este es un mensaje automático generado por n8n.<br>© 2026 Gestión Ganadera Automatizada.</p>         </div>     </div>   </body> </html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        -144
+      ],
+      "id": "3d34411e-d48b-4dad-9c42-316d9d612780",
+      "name": "Confirmar carga 'fecha_partos'",
+      "webhookId": "97acfd01-95d5-4d79-b00c-512a6cdf709c",
+      "executeOnce": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Upbn5OkUmq1uzEnb",
+          "name": "Gmail account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "cargaparicionesv2",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -624,
+        304
+      ],
+      "id": "c8afcaf1-f8e2-45fb-92d9-481d9fb89515",
+      "name": "Webhook Pariciones",
+      "webhookId": "9efec323-1790-4439-a748-9c15b2e8dfcb"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1YcXPqcSYOBHkxPiwTd5c4miVq6OC-Yphs-T2aHCiBlQ",
+          "mode": "list",
+          "cachedResultName": "Hoja_tactos2"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja_vacas"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Caravana",
+              "lookupValue": "={{ $json.body?.caravana || $json.body?.Caravana || $json.caravana || $json.Caravana }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -416,
+        304
+      ],
+      "id": "6b55a8dd-181f-4783-a891-dfe236aeafe4",
+      "name": "Validar Vaca Maestra",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LlSGWHE4byTnZPKK",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1jS2uFWXfeFOFHFkO8TwzY8DkyvMEMGsG0kMuCSwHFCk",
+          "mode": "list",
+          "cachedResultName": "Hoja_paricion2"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja_paricion"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Caravana": "={{ $('Webhook Pariciones').first().json.body?.caravana || $('Webhook Pariciones').first().json.caravana }}",
+            "Fecha_Paricion": "={{ $('Webhook Pariciones').first().json.body?.Fecha_Paricion || $('Webhook Pariciones').first().json.body?.fecha_paricion }}",
+            "Sexo_Cria": "={{ $('Webhook Pariciones').first().json.body?.Sexo_Cria || $('Webhook Pariciones').first().json.body?.sexo_cria }}",
+            "Peso_Nacer": "={{ $('Webhook Pariciones').first().json.body?.Peso_Nacer || $('Webhook Pariciones').first().json.body?.peso_nacer }}",
+            "Observaciones": "={{ $('Webhook Pariciones').first().json.body?.Observaciones || $('Webhook Pariciones').first().json.body?.observaciones || '' }}"
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        80,
+        208
+      ],
+      "id": "6cdcd6ed-28c2-4177-87d0-6efb5bf44781",
+      "name": "Registrar Parición",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LlSGWHE4byTnZPKK",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "grupo4mineriadatos@gmail.com",
+        "subject": "Nueva Parición Registrada 🐄!",
+        "message": "La parición se ha registrado exitosamente en la base de datos transaccional de Google Sheets.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        336,
+        224
+      ],
+      "id": "7a6b3a08-893a-40a7-991b-29a0dea733b1",
+      "name": "E-mail de confirmación",
+      "webhookId": "f4eec3eb-e9d4-4784-9600-fc04578c25c3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Upbn5OkUmq1uzEnb",
+          "name": "Gmail account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "cond-1",
+              "leftValue": "={{ $json.Caravana }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -224,
+        304
+      ],
+      "id": "5f574cce-aee9-4c94-87a6-5bdf6d7a300b",
+      "name": "If - ¿La vaca existe?1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Leer Vacas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer Vacas": {
+      "main": [
+        [
+          {
+            "node": "If - ¿La vaca existe?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If - ¿La vaca existe?": {
+      "main": [
+        [
+          {
+            "node": "Code: calcular fecha parto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: calcular fecha parto": {
+      "main": [
+        [
+          {
+            "node": "Cargar a la hoja Tactos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cargar a la hoja Tactos": {
+      "main": [
+        [
+          {
+            "node": "Confirmar carga 'fecha_partos'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook Pariciones": {
+      "main": [
+        [
+          {
+            "node": "Validar Vaca Maestra",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Vaca Maestra": {
+      "main": [
+        [
+          {
+            "node": "If - ¿La vaca existe?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar Parición": {
+      "main": [
+        [
+          {
+            "node": "E-mail de confirmación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If - ¿La vaca existe?1": {
+      "main": [
+        [
+          {
+            "node": "Registrar Parición",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "2670a482-4afb-44ea-90d4-304c758a00f8",
+  "meta": {
+    "instanceId": "548b44c8c38fe1f8d6e4aa2ed0a6171c1f94df4fbafcac1f54cb07995f2c2567"
+  },
+  "id": "rcByauaQhEaXnIUw",
+  "tags": []
+}
